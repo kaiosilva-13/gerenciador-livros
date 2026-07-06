@@ -41,13 +41,13 @@ export class BibliotecaService {
     return livro;
   }
 
-  criar(dados: Omit<Livro, 'id'>) {
+  criar(dados: Omit<Livro, 'id' | 'isEmprestado'>) {
     const novoId =
       this.livros.length > 0
         ? Math.max(...this.livros.map((l) => l.id)) + 1
         : 1;
 
-    const novoLivro = { id: novoId, ...dados };
+    const novoLivro = { id: novoId, isEmprestado: false, ...dados };
     this.livros.push(novoLivro);
 
     return novoLivro;
@@ -61,5 +61,16 @@ export class BibliotecaService {
     }
 
     this.livros = this.livros.filter((l) => l.id !== id);
+  }
+
+  atualizarParcial(id: number, dados: Partial<Omit<Livro, 'id'>>) {
+    const livro = this.buscarPorId(id);
+    const livroAtualizado = { ...livro, ...dados };
+
+    this.livros = this.livros.map((item) =>
+      item.id === id ? livroAtualizado : item,
+    );
+
+    return livroAtualizado;
   }
 }
