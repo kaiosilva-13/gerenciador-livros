@@ -41,14 +41,25 @@ export class BibliotecaService {
     return livro;
   }
 
-  criar(dados: Omit<Livro, 'id'>){
-    const novoId = this.livros.length > 0? Math.max(...this.livros.map((l) => l.id)) + 1 : 1;
+  criar(dados: Omit<Livro, 'id'>) {
+    const novoId =
+      this.livros.length > 0
+        ? Math.max(...this.livros.map((l) => l.id)) + 1
+        : 1;
 
-    const novoLivro = {id: novoId,...dados};
+    const novoLivro = { id: novoId, ...dados };
     this.livros.push(novoLivro);
 
     return novoLivro;
   }
 
+  remover(id: number) {
+    const existe = this.livros.some((l) => l.id === id);
 
+    if (!existe) {
+      throw new NotFoundException('Livro não encontrado');
+    }
+
+    this.livros = this.livros.filter((l) => l.id !== id);
+  }
 }
