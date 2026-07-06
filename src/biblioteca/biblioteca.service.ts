@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 type Livro = {
   id: number;
@@ -31,5 +31,15 @@ export class BibliotecaService {
     }
 
     return resultado;
+  }
+
+  buscarPorId(id: number) {
+    const livro = this.livros.find((item) => item.id === id);
+
+    if (!livro) {
+      throw new NotFoundException('Livro não encontrado');
+    }
+
+    return livro;
   }
 }
