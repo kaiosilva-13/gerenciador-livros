@@ -25,9 +25,7 @@ export class BibliotecaService {
     }
 
     if (anoPublicacao) {
-      resultado = resultado.filter(
-        (l) => l.anoPublicacao === anoPublicacao,
-      );
+      resultado = resultado.filter((l) => l.anoPublicacao === anoPublicacao);
     }
 
     return resultado;
@@ -42,4 +40,15 @@ export class BibliotecaService {
 
     return livro;
   }
+
+  criar(dados: Omit<Livro, 'id'>){
+    const novoId = this.livros.length > 0? Math.max(...this.livros.map((l) => l.id)) + 1 : 1;
+
+    const novoLivro = {id: novoId,...dados};
+    this.livros.push(novoLivro);
+
+    return novoLivro;
+  }
+
+
 }
