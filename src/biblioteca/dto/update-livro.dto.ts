@@ -1,5 +1,4 @@
-// Use PartialType from @nestjs/swagger to avoid dependency on @nestjs/mapped-types
-import { PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/mapped-types';
 import { CreateLivroDto } from './create-livro.dto';
 import { IsInt, IsNotEmpty, Min } from 'class-validator';
 

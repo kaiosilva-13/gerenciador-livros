@@ -3,7 +3,7 @@ import { BibliotecaService } from './biblioteca.service';
 import { BibliotecaController } from './biblioteca.controller';
 
 @Module({
-  controllers: [BibliotecaController],
   providers: [BibliotecaService],
+  controllers: [BibliotecaController],
 })
 export class BibliotecaModule {}
