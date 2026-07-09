@@ -42,7 +42,7 @@ export class BibliotecaController {
       titulo: dados.titulo,
       autor: dados.autor,
       categoria: dados.categoria,
-      anoPublicacao: dados.anoPublicacao,
+      anoPublicacao: Number(dados.anoPublicacao),
     });
   }
 
