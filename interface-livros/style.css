@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background-color: #f4f4f9;
+    color: #333;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+h1 {
+    text-align: center;
+    color: #1a365d;
+    margin-bottom: 25px;
+}
+form {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+input, button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+button:hover {
+     background-color: #218838;
+}
+button.btn-delete {
+    background-color: #dc3545;
+}
+button.btn-delete:hover {
+    background-color: #c82333;
+}
+button.btn-patch {
+    background-color: #ffc107;
+    color: black;
+}
+button.btn-patch:hover {
+    background-color: #e0a800;
+}
+.livro-card {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.livro-card:last-child {
+    border-bottom: none;
+}
+.livro-info small {
+    display: block;
+    color: #666;
+    margin-top: 4px;
+}
+.livro-acoes {
+    display: flex;
+    gap: 8px;
+}

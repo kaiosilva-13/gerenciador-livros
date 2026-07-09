@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Biblioteca</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Painel Administrativo da Biblioteca</h1>
+        <section class="form-section">
+            <h2>Adicionar Novo Livro (POST)</h2>
+            <form id="form-livro">
+                <input type="text" id="titulo" placeholder="Título do Livro" 
+required>
+                <input type="text" id="autor" placeholder="Autor" required>
+                <input type="text" id="categoria" placeholder="Categoria" required>
+                <input type="text" id="anoPublicacao" placeholder="Ano de Publicação 
+(Opcional)">
+                <button type="submit">Salvar Livro</button>
+            </form>
+        </section>
+        <section class="list-section">
+            <h2>Acervo de Livros (GET)</h2>
+            <div id="lista-livros">
+                <p>Carregando livros...</p>
+            </div>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
