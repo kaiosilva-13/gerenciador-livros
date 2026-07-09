@@ -45,7 +45,7 @@ document.getElementById('form-livro').addEventListener('submit', async (e) => {
         titulo: document.getElementById('titulo').value,
         autor: document.getElementById('autor').value,
         categoria: document.getElementById('categoria').value,
-        anoPublicacao: Number(document.getElementById('anoPublicacao').value) || 0
+        anoPublicacao: Number(document.getElementById('anoPublicacao').value)
     };
     
     try {
