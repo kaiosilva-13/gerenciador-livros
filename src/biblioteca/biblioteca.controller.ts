@@ -12,8 +12,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { BibliotecaService } from './biblioteca.service';
-import { CreateLivroDto } from './criar-livros.dto';
-import { UpdateLivroDto } from './atualizar-livros.dto';
+import { CreateLivroDto } from './dto/create-livro.dto';
+import { UpdateLivroDto } from './dto/update-livro.dto';
 
 @Controller('livros')
 export class BibliotecaController {
@@ -34,16 +34,15 @@ export class BibliotecaController {
   buscarPorId(@Param('id', ParseIntPipe) id: number) {
     return this.bibliotecaService.buscarPorId(id);
   }
-}
 
-// Cadastro de novo livro mapeando dataPublicacao para a estrutura do Service
+  // Cadastro de novo livro mapeando dataPublicacao para a estrutura do Service
   @Post()
   criar(@Body() dados: CreateLivroDto) {
     return this.bibliotecaService.criar({
       titulo: dados.titulo,
       autor: dados.autor,
       categoria: dados.categoria,
-      anoPublicacao: dados.dataPublicacao,
+      anoPublicacao: dados.anoPublicacao,
     });
   }
 
@@ -53,12 +52,7 @@ export class BibliotecaController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dados: UpdateLivroDto,
   ) {
-    return this.bibliotecaService.atualizarParcial(id, {
-      titulo: dados.titulo,
-      autor: dados.autor,
-      categoria: dados.categoria,
-      anoPublicacao: dados.dataPublicacao,
-    });
+    return this.bibliotecaService.atualizarParcial(id, dados);
   }
 
   // Remocao de livro por ID com retorno 204 No Content

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsDateString, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt } from 'class-validator';
 
 export class CreateLivroDto {
   @IsString()
@@ -6,14 +6,14 @@ export class CreateLivroDto {
   titulo!: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'O nome do autor é obrigatório'})
+  @IsNotEmpty({ message: 'O nome do autor é obrigatório' })
   autor!: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'A categoria é obrigatória'})
+  @IsNotEmpty({ message: 'A categoria é obrigatória' })
   categoria!: string;
 
-  @IsDateString() 
+  @IsInt({ message: 'O ano de publicação deve ser um número inteiro' })
   @IsOptional()
-  dataPublicacao?: string;
+  anoPublicacao!: number;
 }

@@ -1,5 +1,5 @@
 export class LivroEntity {
-  id!: string; 
+  id!: string;
   titulo!: string;
   autor!: string;
   categoria!: string;

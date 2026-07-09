@@ -5,7 +5,7 @@ type Livro = {
   titulo: string;
   autor: string;
   categoria: string;
-  anoPublicacao?: string;
+  anoPublicacao: number;
   isEmprestado: boolean;
 };
 
@@ -15,6 +15,7 @@ export class BibliotecaService {
 
   listar(categoria?: string, autor?: string, anoPublicacao?: string) {
     let resultado = [...this.livros];
+    const anoPublicacaoNumber = Number(anoPublicacao);
 
     if (autor) {
       resultado = resultado.filter((l) => l.autor === autor);
@@ -25,7 +26,9 @@ export class BibliotecaService {
     }
 
     if (anoPublicacao) {
-      resultado = resultado.filter((l) => l.anoPublicacao === anoPublicacao);
+      resultado = resultado.filter(
+        (l) => l.anoPublicacao === anoPublicacaoNumber,
+      );
     }
 
     return resultado;
