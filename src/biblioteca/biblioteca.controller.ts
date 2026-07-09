@@ -35,3 +35,36 @@ export class BibliotecaController {
     return this.bibliotecaService.buscarPorId(id);
   }
 }
+
+// Cadastro de novo livro mapeando dataPublicacao para a estrutura do Service
+  @Post()
+  criar(@Body() dados: CreateLivroDto) {
+    return this.bibliotecaService.criar({
+      titulo: dados.titulo,
+      autor: dados.autor,
+      categoria: dados.categoria,
+      anoPublicacao: dados.dataPublicacao,
+    });
+  }
+
+  // Atualizacao parcial de dados do livro por ID
+  @Patch(':id')
+  atualizarParcial(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dados: UpdateLivroDto,
+  ) {
+    return this.bibliotecaService.atualizarParcial(id, {
+      titulo: dados.titulo,
+      autor: dados.autor,
+      categoria: dados.categoria,
+      anoPublicacao: dados.dataPublicacao,
+    });
+  }
+
+  // Remocao de livro por ID com retorno 204 No Content
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remover(@Param('id', ParseIntPipe) id: number) {
+    return this.bibliotecaService.remover(id);
+  }
+}
