@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateLivroDto } from './create-livro.dto';
-import { IsInt, IsNotEmpty, Min } from 'class-validator';
+import { IsInt,IsNotEmpty,Min } from 'class-validator';
 
 export class UpdateLivroDto extends PartialType(CreateLivroDto) {
     @IsInt({ message: 'O ID deve ser um número inteiro' })
