@@ -1,15 +1,15 @@
 const API_URL = 'http://localhost:3000/livros';
 
-// Carregar livros do servidor
-async function carregarLivros() {
+// ALTERAÇÃO: Agora a função aceita receber uma URL customizada com filtros por parâmetro
+async function carregarLivros(urlDestino = API_URL) {
     try {
-        const resposta = await fetch(API_URL);
+        const resposta = await fetch(urlDestino);
         const livros = await resposta.json();
         const container = document.getElementById('lista-livros');
         container.innerHTML = '';
         
         if (livros.length === 0) {
-            container.innerHTML = '<p>Nenhum livro cadastrado.</p>';
+            container.innerHTML = '<p>Nenhum livro encontrado.</p>';
             return;
         }
         
@@ -18,7 +18,6 @@ async function carregarLivros() {
             div.className = 'livro-card';
             const statusTexto = livro.isEmprestado ? 'Emprestado' : 'Disponível';
             
-            // CORREÇÃO: Removidas as barras invertidas excludentes (\$) das interpolações legítimas do JS
             div.innerHTML = `
                 <div class="livro-info">
                     <strong>${livro.titulo}</strong> - ${livro.autor} (${livro.categoria})
@@ -40,7 +39,6 @@ async function carregarLivros() {
 document.getElementById('form-livro').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // CORREÇÃO: Convertendo explicitamente o valor do ano para Number aqui no front também
     const dados = {
         titulo: document.getElementById('titulo').value,
         autor: document.getElementById('autor').value,
@@ -61,16 +59,50 @@ document.getElementById('form-livro').addEventListener('submit', async (e) => {
         }
         
         document.getElementById('form-livro').reset();
-        carregarLivros();
+        carregarLivros(); // Recarrega a lista padrão limpa
     } catch (erro) {
         alert(erro.message);
     }
 });
 
+// ALTERAÇÃO: Mapeamento da função que lê os filtros do seu HTML
+function filtrarLivros() {
+    const campoAutor = document.getElementById('filtro-autor');
+    const campoCategoria = document.getElementById('filtro-categoria');
+    const campoAno = document.getElementById('filtro-ano');
+
+    if (!campoAutor || !campoCategoria || !campoAno) {
+        alert("Erro interno: Verifique os IDs dos filtros no HTML.");
+        return;
+    }
+
+    const autor = campoAutor.value.trim();
+    const categoria = campoCategoria.value.trim();
+    const ano = campoAno.value.trim();
+
+    const parametros = new URLSearchParams();
+
+    if (autor) parametros.append('autor', autor);
+    if (categoria) parametros.append('categoria', categoria);
+    if (ano) parametros.append('anoPublicacao', ano);
+
+    const urlFiltrada = parametros.toString() ? `${API_URL}?${parametros.toString()}` : API_URL;
+    
+    // Dispara o carregamento passando os parâmetros no formato ?categoria=Valor
+    carregarLivros(urlFiltrada);
+}
+
+// ALTERAÇÃO: Função para limpar a barra de filtros
+function limparFiltros() {
+    document.getElementById('filtro-autor').value = '';
+    document.getElementById('filtro-categoria').value = '';
+    document.getElementById('filtro-ano').value = '';
+    carregarLivros(API_URL);
+}
+
 // Alternar status de empréstimo (PATCH)
 async function alternarStatus(id, statusAtual) {
     try {
-        // CORREÇÃO: Garantindo a URL limpa sem caracteres de escape vazados
         const resposta = await fetch(`${API_URL}/${id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -92,7 +124,6 @@ async function alternarStatus(id, statusAtual) {
 async function deletarLivro(id) {
     if (!confirm('Deseja mesmo remover este livro?')) return;
     try {
-        // CORREÇÃO: URL limpa para o ParseIntPipe do NestJS conseguir ler o número perfeitamente
         const resposta = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         
         if (resposta.status === 204 || resposta.ok) {
@@ -106,5 +137,4 @@ async function deletarLivro(id) {
     }
 }
 
-// Inicialização automática ao carregar a página
-document.addEventListener('DOMContentLoaded', carregarLivros);
+document.addEventListener('DOMContentLoaded', () => carregarLivros());
