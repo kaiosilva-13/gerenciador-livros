@@ -9,17 +9,29 @@
 <body>
     <div class="container">
         <h1>Painel Administrativo da Biblioteca</h1>
+        
         <section class="form-section">
             <h2>Adicionar Novo Livro (POST)</h2>
             <form id="form-livro">
-                <input type="text" id="titulo" placeholder="Título do Livro" 
-required>
+                <input type="text" id="titulo" placeholder="Título do Livro" required>
                 <input type="text" id="autor" placeholder="Autor" required>
                 <input type="text" id="categoria" placeholder="Categoria" required>
-                <input type="text" id="anoPublicacao" placeholder="Ano de Publicação" required>
+                <input type="number" id="anoPublicacao" placeholder="Ano de Publicação" required>
                 <button type="submit">Salvar Livro</button>
             </form>
         </section>
+
+        <section class="filter-section">
+            <h2>Filtrar Acervo</h2>
+            <div class="filtros-grupo">
+                <input type="text" id="filtro-autor" placeholder="Filtrar por Autor">
+                <input type="text" id="filtro-categoria" placeholder="Filtrar por Categoria">
+                <input type="number" id="filtro-ano" placeholder="Filtrar por Ano">
+                <button type="button" onclick="filtrarLivros()">Filtrar</button>
+                <button type="button" onclick="limparFiltros()" class="btn-clear">Limpar</button>
+            </div>
+        </section>
+
         <section class="list-section">
             <h2>Acervo de Livros (GET)</h2>
             <div id="lista-livros">
