@@ -1,114 +1,48 @@
 const API_URL = 'http://localhost:3000/livros';
 
+// Guarda o ID do livro aberto na mini janela de edição
+let idLivroNoModal = null;
+
 // =========================================================================
-// 1. CARREGAR LIVROS (Busca a lista completa do servidor ao iniciar)
+// 1. CARREGAR E RENDERIZAR LIVROS (GET)
 // =========================================================================
 async function carregarLivros() {
     try {
-        // Faz a requisição GET para a API do NestJS
         const resposta = await fetch(API_URL);
-        const livros = await resposta.json();
         
-        // Renderiza todos os livros retornados na tela
+        if (!resposta.ok) throw new Error('Não foi possível obter os dados da API.');
+        
+        const livros = await resposta.json();
         renderizarLista(livros);
     } catch (erro) {
-        alert('Erro ao buscar livros do servidor.');
+        alert('Erro ao carregar acervo: ' + erro.message);
     }
 }
 
-// =========================================================================
-// 2. FILTRAR LIVROS (Busca inteligente por iniciais no Front-end)
-// =========================================================================
-async function filtrarLivros() {
-    const campoAutor = document.getElementById('filtro-autor');
-    const campoCategoria = document.getElementById('filtro-categoria');
-    const campoAno = document.getElementById('filtro-ano');
-
-    // Validação de segurança para garantir que os elementos existem no HTML
-    if (!campoAutor || !campoCategoria || !campoAno) {
-        alert("Erro interno: Verifique os IDs dos filtros no HTML.");
-        return;
-    }
-
-    // Captura os valores digitados, remove espaços extras (.trim) e padroniza em minúsculo (.toLowerCase)
-    const autorFiltro = campoAutor.value.trim().toLowerCase();
-    const categoriaFiltro = campoCategoria.value.trim().toLowerCase();
-    const anoFiltro = campoAno.value.trim();
-
-    try {
-        // Busca o acervo completo do NestJS para realizar o filtro localmente
-        const resposta = await fetch(API_URL);
-        const todosLivros = await resposta.json();
-        
-        // Filtra a lista com base nas regras de iniciais e igualdade
-        const livrosFiltrados = todosLivros.filter(livro => {
-            
-            // REGRA DO AUTOR: 
-            // Se o usuário digitou algo, verifica se o autor salvo COMEÇA COM (.startsWith) as letras digitadas.
-            // Se o filtro estiver vazio, esta regra é ignorada (retorna true).
-            const bateAutor = autorFiltro 
-                ? livro.autor.toLowerCase().trim().startsWith(autorFiltro) 
-                : true;
-
-            // REGRA DA CATEGORIA:
-            // Segue a mesma lógica do autor: verifica se a categoria cadastrada COMEÇA COM o termo pesquisado.
-            const bateCategoria = categoriaFiltro 
-                ? livro.categoria.toLowerCase().trim().startsWith(categoriaFiltro) 
-                : true;
-
-            // REGRA DO ANO:
-            // Por se tratar de um número exato, faz a comparação direta de igualdade numérica.
-            const bateAno = anoFiltro 
-                ? Number(livro.anoPublicacao) === Number(anoFiltro) 
-                : true;
-            
-            // O livro só será exibido se passar com sucesso em todas as 3 validações de filtro
-            return bateAutor && bateCategoria && bateAno;
-        });
-
-        // Atualiza a interface exibindo apenas o resultado filtrado
-        renderizarLista(livrosFiltrados, '<p>Nenhum livro encontrado para essa busca.</p>');
-    } catch (erro) {
-        alert('Erro ao aplicar o filtro nos livros.');
-    }
-}
-
-// =========================================================================
-// 3. LIMPAR FILTROS (Reseta os inputs e recarrega a lista original)
-// =========================================================================
-function limparFiltros() {
-    document.getElementById('filtro-autor').value = '';
-    document.getElementById('filtro-categoria').value = '';
-    document.getElementById('filtro-ano').value = '';
-    carregarLivros(); // Recarrega exibindo todos os livros sem filtros
-}
-
-// =========================================================================
-// 4. AUXILIAR: RENDERIZAR CARD NO HTML (Cria dinamicamente os elementos visuais)
-// =========================================================================
 function renderizarLista(lista, mensagemVazia = '<p>Nenhum livro cadastrado.</p>') {
     const container = document.getElementById('lista-livros');
-    container.innerHTML = ''; // Limpa a lista atual antes de renderizar a nova
+    container.innerHTML = ''; 
 
-    // Se o array resultante estiver vazio, exibe a mensagem de feedback definida
     if (lista.length === 0) {
         container.innerHTML = mensagemVazia;
         return;
     }
 
-    // Varre cada livro gerando o bloco HTML correspondente
     lista.forEach(livro => {
         const div = document.createElement('div');
         div.className = 'livro-card';
-        const statusTexto = livro.isEmprestado ? 'Emprestado' : 'Disponível';
+        
+        // Converte o objeto livro para string segura para injetar como parâmetro HTML
+        const livroJson = JSON.stringify(livro).replace(/"/g, '&quot;');
         
         div.innerHTML = `
             <div class="livro-info">
                 <strong>${livro.titulo}</strong> - ${livro.autor} (${livro.categoria})
-                <br><small>Status: ${statusTexto} | Ano: ${livro.anoPublicacao}</small>
+                <br><small>Ano: ${livro.anoPublicacao}</small>
             </div>
             <div class="livro-acoes">
-                <button class="btn-patch" onclick="alternarStatus(${livro.id}, ${livro.isEmprestado})">Alternar Status</button>
+                <!-- Botão Editar: Abre o modal carregando os dados deste livro -->
+                <button class="btn-patch" onclick="abrirModal(${livroJson})">Editar</button>
                 <button class="btn-delete" onclick="deletarLivro(${livro.id})">Deletar</button>
             </div>
         `;
@@ -117,16 +51,113 @@ function renderizarLista(lista, mensagemVazia = '<p>Nenhum livro cadastrado.</p>
 }
 
 // =========================================================================
-// 5. EVENTO DE SUBMISSÃO (Envia dados do novo livro para o NestJS via POST)
+// 2. FILTRAR ACERVO (Busca inteligente por iniciais)
+// =========================================================================
+async function filtrarLivros() {
+    const campoTitulo = document.getElementById('filtro-titulo');
+    const campoAutor = document.getElementById('filtro-autor');
+    const campoCategoria = document.getElementById('filtro-categoria');
+    const campoAno = document.getElementById('filtro-ano');
+
+    if (!campoTitulo || !campoAutor || !campoCategoria || !campoAno) return;
+
+    // Remove espaços vazios e padroniza a busca em letras minúsculas
+    const tituloFiltro = campoTitulo.value.trim().toLowerCase();
+    const autorFiltro = campoAutor.value.trim().toLowerCase();
+    const categoriaFiltro = campoCategoria.value.trim().toLowerCase();
+    const anoFiltro = campoAno.value.trim();
+
+    try {
+        const resposta = await fetch(API_URL);
+        const todosLivros = await resposta.json();
+        
+        const livrosFiltrados = todosLivros.filter(livro => {
+            // Verifica se o valor cadastrado começa com o termo inserido (.startsWith)
+            const bateTitulo = tituloFiltro ? livro.titulo.toLowerCase().trim().startsWith(tituloFiltro) : true;
+            const bateAutor = autorFiltro ? livro.autor.toLowerCase().trim().startsWith(autorFiltro) : true;
+            const bateCategoria = categoriaFiltro ? livro.categoria.toLowerCase().trim().startsWith(categoriaFiltro) : true;
+            const bateAno = anoFiltro ? Number(livro.anoPublicacao) === Number(anoFiltro) : true;
+            
+            return bateTitulo && bateAutor && bateCategoria && bateAno;
+        });
+
+        renderizarLista(livrosFiltrados, '<p>Nenhum livro encontrado para essa busca.</p>');
+    } catch (erro) {
+        alert('Erro ao filtrar livros.');
+    }
+}
+
+function limparFiltros() {
+    document.getElementById('filtro-titulo').value = '';
+    document.getElementById('filtro-autor').value = '';
+    document.getElementById('filtro-categoria').value = '';
+    document.getElementById('filtro-ano').value = '';
+    carregarLivros(); 
+}
+
+// =========================================================================
+// 3. CONTROLE DA MINI JANELA (MODAL)
+// =========================================================================
+function abrirModal(livro) {
+    // Preenche as informações atuais nos inputs do modal para que o usuário possa alterar
+    document.getElementById('edit-titulo').value = livro.titulo;
+    document.getElementById('edit-autor').value = livro.autor;
+    document.getElementById('edit-categoria').value = livro.categoria;
+    document.getElementById('edit-ano').value = livro.anoPublicacao;
+    
+    // Vincula o ID do livro em edição à variável global de controle
+    idLivroNoModal = livro.id;
+    
+    // Altera a classe CSS para deixar o modal visível na tela
+    document.getElementById('modal-edicao').className = 'modal-visivel';
+}
+
+function fecharModal() {
+    // Retorna a classe que oculta o modal e reseta o ID monitorado
+    document.getElementById('modal-edicao').className = 'modal-oculto';
+    idLivroNoModal = null;
+}
+
+// Evento disparado quando o usuário clica em "Salvar Alterações" dentro do modal
+document.getElementById('form-editar').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const dadosAtualizados = {
+        titulo: document.getElementById('edit-titulo').value.trim(),
+        autor: document.getElementById('edit-autor').value.trim(),
+        categoria: document.getElementById('edit-categoria').value.trim(),
+        anoPublicacao: Number(document.getElementById('edit-ano').value)
+    };
+    
+    try {
+        const resposta = await fetch(`${API_URL}/${idLivroNoModal}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosAtualizados)
+        });
+        
+        if (!resposta.ok) {
+            const erroData = await resposta.json();
+            throw new Error(erroData.message || 'Erro ao processar atualização no servidor.');
+        }
+        
+        fecharModal(); // Fecha a mini janela
+        await carregarLivros(); // Força a atualização da listagem (GET)
+    } catch (erro) {
+        alert('Não foi possível salvar as alterações: ' + erro.message);
+    }
+});
+
+// =========================================================================
+// 4. CADASTRAR NOVO LIVRO (Formulário Principal)
 // =========================================================================
 document.getElementById('form-livro').addEventListener('submit', async (e) => {
-    e.preventDefault(); // Impede que a página recarregue ao enviar o formulário
+    e.preventDefault(); 
     
-    // Captura os dados inseridos e formata o ano para tipo Number
     const dados = {
-        titulo: document.getElementById('titulo').value,
-        autor: document.getElementById('autor').value,
-        categoria: document.getElementById('categoria').value,
+        titulo: document.getElementById('titulo').value.trim(),
+        autor: document.getElementById('autor').value.trim(),
+        categoria: document.getElementById('categoria').value.trim(),
         anoPublicacao: Number(document.getElementById('anoPublicacao').value)
     };
     
@@ -134,61 +165,39 @@ document.getElementById('form-livro').addEventListener('submit', async (e) => {
         const resposta = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados) // Transforma o objeto JS em string JSON
+            body: JSON.stringify(dados)
         });
         
         if (!resposta.ok) {
             const erroData = await resposta.json();
-            throw new Error(erroData.message || 'Erro ao criar livro');
+            throw new Error(erroData.message || 'Verifique as validações dos dados inseridos.');
         }
         
-        document.getElementById('form-livro').reset(); // Limpa os inputs do formulário de cadastro
-        carregarLivros(); // Recarrega a lista para exibir o livro recém-criado
+        document.getElementById('form-livro').reset(); // Reseta os campos do form principal
+        await carregarLivros(); // Atualiza a listagem (GET) imediatamente
     } catch (erro) {
-        alert(erro.message);
+        alert('Falha ao cadastrar: ' + erro.message);
     }
 });
 
 // =========================================================================
-// 6. ALTERNAR STATUS DE EMPRÉSTIMO (Inverte o booleano no back-end via PATCH)
-// =========================================================================
-async function alternarStatus(id, statusAtual) {
-    try {
-        const resposta = await fetch(`${API_URL}/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ isEmprestado: !statusAtual }) // Envia o valor booleano invertido
-        });
-        
-        if (!resposta.ok) {
-            const erroData = await resposta.json();
-            throw new Error(erroData.message || 'Erro ao alternar status');
-        }
-        
-        carregarLivros(); // Recarrega a lista para refletir a mudança visual de status
-    } catch (erro) {
-        alert(erro.message || 'Não foi possível atualizar o status.');
-    }
-}
-
-// =========================================================================
-// 7. DELETAR UM LIVRO (Remove o registro do servidor via DELETE)
+// 5. REMOVER REGISTRO (DELETE)
 // =========================================================================
 async function deletarLivro(id) {
-    if (!confirm('Deseja mesmo remover este livro?')) return; // Confirmação de segurança
+    if (!confirm('Deseja mesmo remover este livro?')) return;
     try {
         const resposta = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         
-        if (resposta.status === 204 || resposta.ok) {
-            carregarLivros(); // Atualiza a lista na tela removendo o card
+        if (resposta.ok || resposta.status === 204) {
+            await carregarLivros();
         } else {
             const erroData = await resposta.json();
-            alert(erroData.message || 'Erro ao deletar');
+            throw new Error(erroData.message || 'Erro na requisição.');
         }
     } catch (erro) {
-        alert('Erro ao conectar com o servidor.');
+        alert('Erro ao deletar: ' + erro.message);
     }
 }
 
-// Inicialização automática: busca e exibe os livros assim que a página terminar de carregar
-document.addEventListener('DOMContentLoaded', carregarLivros); 
+// Escuta o carregamento total do DOM para inicializar os cards de livros na tela
+document.addEventListener('DOMContentLoaded', carregarLivros);
