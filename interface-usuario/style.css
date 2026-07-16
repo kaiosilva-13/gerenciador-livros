@@ -1,0 +1,147 @@
+/* =========================================================================
+   ESTILOS GERAIS DA PÁGINA DO CLIENTE
+   ========================================================================= */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #28a745; /* Verde para diferenciar visualmente da área administrativa */
+  margin-bottom: 30px;
+}
+
+section {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+h2 {
+  color: #495057;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+/* Identificação do Usuário */
+.login-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+select {
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
+/* Inputs de Filtros */
+input {
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
+.filtros-grupo {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Botões */
+button {
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-clear {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  height: 100%;
+}
+
+.btn-clear:hover {
+  background-color: #5a6268;
+}
+
+/* Cards de Livros */
+.livro-card {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.livro-info strong {
+  font-size: 1.1rem;
+  color: #212529;
+}
+
+.livro-acoes button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  font-size: 0.9rem;
+}
+
+/* Botões de Ação para o Usuário */
+.btn-emprestar {
+  background-color: #28a745;
+  color: white;
+}
+.btn-emprestar:hover {
+  background-color: #218838;
+}
+
+.btn-indisponivel {
+  background-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+/* Adicione no final do seu style.css da interface-cliente */
+.btn-cancelar {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-cancelar:hover {
+  background-color: #c82333;
+}
