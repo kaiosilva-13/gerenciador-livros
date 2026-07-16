@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { EmprestimosService } from './emprestimos.service';
+import { EmprestimosController } from './emprestimos.controller';
+import { BibliotecaModule } from 'src/biblioteca/biblioteca.module';
+import { UsuariosModule } from 'src/usuarios/usuarios.module';
+
+@Module({
+  imports: [BibliotecaModule, UsuariosModule],
+  providers: [EmprestimosService],
+  controllers: [EmprestimosController],
+})
+export class EmprestimosModule {}
