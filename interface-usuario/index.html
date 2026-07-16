@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biblioteca - Área do Leitor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Área do Leitor</h1>
+
+      <!-- 1. SEÇÃO: LOGIN SIMULADO (IDENTIFICAÇÃO) -->
+      <section class="login-section">
+        <h2>Identificar Leitor</h2>
+        <div class="login-grupo">
+          <label for="select-usuario">Selecione seu usuário:</label>
+          <!-- Adicionado o evento onchange para redesenhar a lista ao trocar o leitor ativo -->
+          <select id="select-usuario" onchange="mudarUsuarioAtivo()">
+            <!-- Será preenchido dinamicamente via API -->
+          </select>
+        </div>
+      </section>
+
+      <!-- 2. SEÇÃO: FILTRAR ACERVO -->
+      <section class="filter-section">
+        <h2>Filtrar Acervo</h2>
+        <div class="filtros-grupo">
+          <input
+            type="text"
+            id="filtro-titulo"
+            placeholder="Filtrar por Título"
+            oninput="filtrarLivros()"
+          />
+          <input
+            type="text"
+            id="filtro-autor"
+            placeholder="Filtrar por Autor"
+            oninput="filtrarLivros()"
+          />
+          <input
+            type="text"
+            id="filtro-categoria"
+            placeholder="Filtrar por Categoria"
+            oninput="filtrarLivros()"
+          />
+          <input
+            type="number"
+            id="filtro-ano"
+            placeholder="Filtrar por Ano"
+            oninput="filtrarLivros()"
+          />
+          <button type="button" onclick="limparFiltros()" class="btn-clear">
+            Limpar Filtros
+          </button>
+        </div>
+      </section>
+
+      <!-- 3. SEÇÃO: LISTAGEM DOS LIVROS -->
+      <section class="lista-section">
+        <h2>Livros Disponíveis para Empréstimo</h2>
+        <div id="lista-livros">
+          <!-- Os livros serão renderizados dinamicamente aqui -->
+        </div>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
