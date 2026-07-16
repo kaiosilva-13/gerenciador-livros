@@ -1,4 +1,4 @@
-const API_URL = 'https://gerenciador-livros-interface.onrender.com';
+const API_URL = 'https://gerenciador-livros-interface.onrender.com/livros';
 
 // Guarda o ID do livro aberto na mini janela de edição
 let idLivroNoModal = null;

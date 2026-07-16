@@ -1,6 +1,6 @@
-const API_LIVROS = 'http://localhost:3000/livros';
-const API_USUARIOS = 'http://localhost:3000/usuarios';
-const API_EMPRESTIMOS = 'http://localhost:3000/emprestimos';
+const API_LIVROS = 'https://gerenciador-livros-interface.onrender.com/livros';
+const API_USUARIOS = 'https://gerenciador-livros-interface.onrender.com/usuarios';
+const API_EMPRESTIMOS = 'https://gerenciador-livros-interface.onrender.com/emprestimos';
 
 // Variável global para armazenar quem pegou qual livro
 let emprestimosAtivos = [];
