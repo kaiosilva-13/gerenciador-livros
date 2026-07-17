@@ -67,9 +67,38 @@ If you are looking for a cloud-based platform to deploy your NestJS application,
 $ npm install -g @nestjs/mau
 $ mau deploy
 ```
+Contribuintes e Responsabilidades
+Abaixo estão listados os integrantes do projeto e o detalhamento das frentes de desenvolvimento que cada um liderou ao longo do projeto:
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Kaio (kaiosilva-13)
+Arquitetura e Configuração Inicial: Responsável pela criação da estrutura base do projeto e pela configuração inicial do módulo de biblioteca, além de gerenciar a integração de ramos (merges) no repositório.
 
+Módulo de Usuários: Criação, configuração e exportação de todos os artefatos relacionados a usuários, o que engloba a implementação do controller, regras de negócio e geração de usuários genéricos.
+
+Gerenciamento do Catálogo de Livros: Desenvolvimento das funcionalidades essenciais para manipulação de registros de livros, implementando métodos específicos para criação de novos registros, buscas por identificador único (ID), listagem geral, atualização e remoção do banco.
+
+Melissa (mellyssat7)
+Fluxo Completo de Empréstimos: Implementação de ponta a ponta do fluxo de empréstimo e devolução de livros, incluindo a estruturação do controller para exposição das rotas, codificação das regras de negócio no service e registro no módulo principal da aplicação.
+
+Validação de Entrada de Empréstimos: Criação de Data Transfer Objects (DTOs) específicos para garantir a consistência e segurança das propriedades exigidas ao abrir ou encerrar um empréstimo.
+
+Ambiente de Containerização (Docker): Responsável por criar e configurar os arquivos do Docker para permitir a execução, empacotamento e testes iniciais do ambiente de forma isolada.
+
+Natan (natangte)
+Desenvolvimento da Interface do Usuário (Front-end): Construção integral da pasta de interface, criando a estrutura estrutural em HTML (index.html), a estilização visual moderna (style.css) e a dinâmica do comportamento do cliente através de scripts em JavaScript (script.js).
+
+Módulo de Filtragem de Livros: Criação da área de filtros no documento HTML, seu design estético e a implementação lógica em JavaScript para refinamento de buscas de livros.
+
+Módulo de Edição Visual: Desenvolvimento do modal de edição de livros no front-end, realizando o isolamento correto do formulário de cadastro principal e aplicando estilos dedicados à interface de edição.
+
+Ajustes e Integração: Correção de bugs de comunicação para integrar perfeitamente a interface cliente às rotas de API desenvolvidas no back-end.
+
+Antony (antonythiago06)
+Preparação para Produção e Deploy: Configuração de Cross-Origin Resource Sharing (CORS) para permitir a integração segura do front-end com o servidor, criação de rota de verificação de saúde da aplicação (health check) e atualização de todas as URLs de requisição do cliente para se comunicarem diretamente com a API implantada na plataforma Render.
+
+Gerenciamento de Dependências e Segurança: Adição das bibliotecas class-validator e class-transformer nas dependências principais para realizar a validação automática e transformação segura de tipos de dados de entrada na API.
+
+Validação de Dados (DTOs): Criação e alteração de propriedades em DTOs (Data Transfer Objects), incluindo correções de erros e ajustes no fluxo de criação de registros para garantir que parâmetros sensíveis como o ano de publicação fossem validados adequadamente.
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
